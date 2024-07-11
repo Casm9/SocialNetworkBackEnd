@@ -12,6 +12,7 @@ import com.casm.routes.getCommentsForPost
 import com.casm.routes.getLikesForParent
 import com.casm.routes.getPostsForFollows
 import com.casm.routes.getPostsForProfile
+import com.casm.routes.getSkills
 import com.casm.routes.getUserProfile
 import com.casm.routes.likeParent
 import com.casm.routes.loginUser
@@ -24,6 +25,7 @@ import com.casm.service.CommentService
 import com.casm.service.FollowService
 import com.casm.service.LikeService
 import com.casm.service.PostService
+import com.casm.service.SkillService
 import com.casm.service.UserService
 import io.ktor.application.*
 import io.ktor.http.content.files
@@ -43,6 +45,7 @@ fun Application.configureRouting() {
     val likeService: LikeService by inject()
     val commentService: CommentService by inject()
     val activityService: ActivityService by inject()
+    val skillService: SkillService by inject()
 
     val jwtIssuer = environment.config.property("jwt.domain").getString()
     val jwtAudience = environment.config.property("jwt.audience").getString()
@@ -85,6 +88,9 @@ fun Application.configureRouting() {
 
         //activity routes
         getActivities(activityService)
+
+        //skill routes
+        getSkills(skillService)
 
         static {
             resources("static")

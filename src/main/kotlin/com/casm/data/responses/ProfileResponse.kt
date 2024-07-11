@@ -1,6 +1,8 @@
 package com.casm.data.responses
 
+
 data class ProfileResponse(
+    val userId: String,
     val username: String,
     val bio: String,
     val followerCount: Int,
@@ -8,7 +10,7 @@ data class ProfileResponse(
     val postCount: Int,
     val profilePictureUrl: String,
     val bannerUrl: String,
-    val topSkillUrls: List<String>,
+    val topSkills: List<SkillResponse>,
     val gitHubUrl: String?,
     val instagramUrl: String?,
     val linkedInUrl:String?,
