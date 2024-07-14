@@ -13,7 +13,7 @@ fun Route.getSkills(skillService: SkillService) {
         get("/api/skills/get") {
             call.respond(
                 HttpStatusCode.OK,
-                skillService.getSkills().map { it.toSkillResponse() }
+                skillService.getSkills().map { it.toSkillDto() }
             )
         }
     }

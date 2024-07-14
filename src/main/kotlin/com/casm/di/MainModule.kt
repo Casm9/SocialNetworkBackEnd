@@ -23,6 +23,8 @@ import com.casm.service.SkillService
 import com.casm.service.UserService
 import com.casm.util.Constants
 import com.google.gson.Gson
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.koin.dsl.module
 import org.litote.kmongo.coroutine.coroutine
 import org.litote.kmongo.reactivestreams.KMongo
@@ -64,4 +66,5 @@ val mainModule = module {
     single { SkillService(get()) }
 
     single { Gson() }
+
 }

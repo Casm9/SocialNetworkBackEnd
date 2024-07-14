@@ -101,7 +101,6 @@ fun Route.updateUserProfile(userService: UserService) {
                         } else if (partData.name == "banner_image") {
                             bannerImageFileName = partData.save(BANNER_IMAGE_PATH)
                         }
-                        profilePictureFileName = partData.save(PROFILE_PICTURE_PATH)
                     }
 
                     is PartData.BinaryItem -> Unit

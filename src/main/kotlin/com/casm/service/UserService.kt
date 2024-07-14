@@ -7,6 +7,7 @@ import com.casm.data.repository.user.UserRepository
 import com.casm.data.requests.UpdateProfileRequest
 import com.casm.data.responses.ProfileResponse
 import com.casm.data.responses.UserResponseItem
+import com.casm.util.Constants
 
 
 class UserService(
@@ -28,12 +29,12 @@ class UserService(
             postCount = user.postCount,
             profilePictureUrl = user.profileImageUrl,
             bannerUrl = user.bannerUrl,
-            topSkills = user.skills.map { it.toSkillResponse() },
+            topSkills = user.skills,
             gitHubUrl = user.gitHubUrl,
             instagramUrl = user.instagramUrl,
             linkedInUrl = user.linkedInUrl,
             isOwnProfile = userId == callerUserId,
-            isFollowing = if(userId != callerUserId) {
+            isFollowing = if (userId != callerUserId) {
                 followRepository.doesUserFollow(callerUserId, userId)
             } else {
                 false
@@ -79,8 +80,8 @@ class UserService(
                 email = request.email,
                 username = request.username,
                 password = request.password,
-                profileImageUrl = "",
-                bannerUrl = "",
+                profileImageUrl = Constants.DEFAULT_PROFILE_PICTURE_PATH,
+                bannerUrl = Constants.DEFAULT_BANNER_IMAGE_PATH,
                 bio = "",
                 gitHubUrl = null,
                 instagramUrl = null,
