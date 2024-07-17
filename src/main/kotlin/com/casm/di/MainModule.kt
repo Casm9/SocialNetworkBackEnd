@@ -1,5 +1,6 @@
 package com.casm.di
 
+import com.casm.data.models.Post
 import com.casm.data.repository.activity.ActivityRepository
 import com.casm.data.repository.activity.ActivityRepositoryImpl
 import com.casm.data.repository.comment.CommentRepository
