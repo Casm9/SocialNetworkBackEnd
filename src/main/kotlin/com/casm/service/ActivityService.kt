@@ -5,6 +5,7 @@ import com.casm.data.models.Post
 import com.casm.data.repository.activity.ActivityRepository
 import com.casm.data.repository.comment.CommentRepository
 import com.casm.data.repository.post.PostRepository
+import com.casm.data.responses.ActivityResponse
 import com.casm.data.util.ActivityType
 import com.casm.data.util.ParentType
 import com.casm.util.Constants
@@ -18,7 +19,7 @@ class ActivityService(
         userId: String,
         page: Int = 0,
         pageSize: Int = Constants.DEFAULT_ACTIVITY_PAGE_SIZE
-    ): List<Activity> {
+    ): List<ActivityResponse> {
         return activityRepository.getActivitiesForUser(userId, page, pageSize)
     }
 
