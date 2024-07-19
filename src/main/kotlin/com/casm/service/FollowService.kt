@@ -13,10 +13,7 @@ class FollowService(
         )
     }
 
-    suspend fun unfollowUserIfExists(request: FollowUpdateRequest, followingUserId: String): Boolean {
-        return followRepository.unfollowUserIfExists(
-            followingUserId,
-            request.followedUserId
-        )
+    suspend fun unfollowUserIfExists(followedUserId: String, followingUserId: String): Boolean {
+        return followRepository.unfollowUserIfExists(followingUserId, followedUserId)
     }
 }

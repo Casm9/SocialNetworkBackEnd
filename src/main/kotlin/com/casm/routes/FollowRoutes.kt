@@ -9,6 +9,7 @@ import com.casm.data.util.ActivityType
 import com.casm.service.ActivityService
 import com.casm.service.FollowService
 import com.casm.util.ApiResponseMessages.USER_NOT_FOUND
+import com.casm.util.QueryParams
 import io.ktor.application.*
 import io.ktor.auth.authenticate
 import io.ktor.http.*
@@ -60,29 +61,32 @@ fun Route.followUser(
 }
 
 fun Route.unfollowUser(followService: FollowService) {
-    delete("/api/following/unfollow") {
-        val request = call.receiveOrNull<FollowUpdateRequest>() ?: run {
-            call.respond(HttpStatusCode.BadRequest)
-            return@delete
+    authenticate {
+        delete("/api/following/unfollow") {
+            val userId = call.parameters[QueryParams.PARAM_USER_ID] ?:  run {
+                call.respond(HttpStatusCode.BadRequest)
+                return@delete
+            }
+
+            val didUserExist = followService.unfollowUserIfExists(userId, call.userId)
+
+            if (didUserExist) {
+                call.respond(
+                    HttpStatusCode.OK,
+                    BasicApiResponse<Unit>(
+                        successful = true
+                    )
+                )
+            } else {
+                call.respond(
+                    HttpStatusCode.OK,
+                    BasicApiResponse<Unit>(
+                        successful = false,
+                        message = USER_NOT_FOUND
+                    )
+                )
+            }
         }
-
-       val didUserExist = followService.unfollowUserIfExists(request, call.userId)
-
-       if (didUserExist) {
-           call.respond(
-               HttpStatusCode.OK,
-               BasicApiResponse<Unit>(
-                   successful = true
-               )
-           )
-       } else {
-           call.respond(
-               HttpStatusCode.OK,
-               BasicApiResponse<Unit>(
-                   successful = false,
-                   message = USER_NOT_FOUND
-               )
-           )
-       }
     }
+
 }
