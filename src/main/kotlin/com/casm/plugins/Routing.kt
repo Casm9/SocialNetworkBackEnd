@@ -10,6 +10,7 @@ import com.casm.routes.followUser
 import com.casm.routes.getActivities
 import com.casm.routes.getCommentsForPost
 import com.casm.routes.getLikesForParent
+import com.casm.routes.getPostDetails
 import com.casm.routes.getPostsForFollows
 import com.casm.routes.getPostsForProfile
 import com.casm.routes.getSkills
@@ -75,6 +76,7 @@ fun Application.configureRouting() {
         createPost(postService)
         getPostsForFollows(postService)
         deletePost(postService, likeService, commentService)
+        getPostDetails(postService)
 
         //Like routes
         likeParent(likeService, activityService)

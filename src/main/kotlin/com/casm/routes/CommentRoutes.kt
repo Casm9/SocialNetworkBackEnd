@@ -60,6 +60,15 @@ fun Route.createComment(
                         )
                     )
                 }
+                is CommentService.ValidationEvent.UserNotFound -> {
+                    call.respond(
+                        HttpStatusCode.OK,
+                        BasicApiResponse<Unit>(
+                            successful = false,
+                            message = "User not found"
+                        )
+                    )
+                }
             }
 
         }

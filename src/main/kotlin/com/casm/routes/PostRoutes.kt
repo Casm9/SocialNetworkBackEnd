@@ -2,13 +2,10 @@ package com.casm.routes
 
 import com.casm.data.requests.CreatePostRequest
 import com.casm.data.requests.DeletePostRequest
-import com.casm.data.requests.UpdateProfileRequest
 import com.casm.data.responses.BasicApiResponse
 import com.casm.service.CommentService
 import com.casm.service.LikeService
 import com.casm.service.PostService
-import com.casm.service.UserService
-import com.casm.util.ApiResponseMessages.USER_NOT_FOUND
 import com.casm.util.Constants
 import com.casm.util.QueryParams
 import com.casm.util.save
@@ -150,6 +147,30 @@ fun Route.getPostsForProfile(
             call.respond(
                 HttpStatusCode.OK,
                 posts
+            )
+        }
+    }
+}
+
+fun Route.getPostDetails(
+    postService: PostService
+) {
+    authenticate{
+        get("api/post/details") {
+            val postId = call.parameters["postId"] ?: run {
+                call.respond(HttpStatusCode.BadRequest)
+                return@get
+            }
+            val post = postService.getPost(postId) ?: run {
+                call.respond(HttpStatusCode.NotFound)
+                return@get
+            }
+            call.respond(
+                HttpStatusCode.OK,
+                BasicApiResponse(
+                    successful = true,
+                    data = post
+                )
             )
         }
     }

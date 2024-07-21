@@ -1,6 +1,7 @@
 package com.casm.data.repository.comment
 
 import com.casm.data.models.Comment
+import com.casm.data.responses.CommentResponse
 
 interface CommentRepository {
 
@@ -10,7 +11,7 @@ interface CommentRepository {
 
     suspend fun deleteCommentsFromPost(postId: String): Boolean
 
-    suspend fun getCommentsForPost(postId: String): List<Comment>
+    suspend fun getCommentsForPost(postId: String): List<CommentResponse>
 
     suspend fun getComment(commentId: String): Comment?
 
