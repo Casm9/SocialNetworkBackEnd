@@ -23,7 +23,10 @@ class ActivityService(
         return activityRepository.getActivitiesForUser(userId, page, pageSize)
     }
 
-    suspend fun addCommentActivity(byUserId: String, postId: String): Boolean {
+    suspend fun addCommentActivity(
+        byUserId: String,
+        postId: String
+    ): Boolean {
         val userIdOfPost = postRepository.getPost(postId)?.userId ?: return false
         if (byUserId == userIdOfPost) {
             return false

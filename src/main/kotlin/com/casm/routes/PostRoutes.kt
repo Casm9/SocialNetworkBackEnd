@@ -161,7 +161,7 @@ fun Route.getPostDetails(
                 call.respond(HttpStatusCode.BadRequest)
                 return@get
             }
-            val post = postService.getPost(postId) ?: run {
+            val post = postService.getPostDetails(call.userId, postId) ?: run {
                 call.respond(HttpStatusCode.NotFound)
                 return@get
             }

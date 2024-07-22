@@ -59,12 +59,16 @@ fun Route.unlikeParent(
 ) {
     authenticate {
         delete("/api/unlike") {
-            val request = call.receiveOrNull<LikeUpdateRequest>() ?: run {
+            val parentId = call.parameters[QueryParams.PARAM_PARENT_ID] ?: run {
+                call.respond(HttpStatusCode.BadRequest)
+                return@delete
+            }
+            val parentType = call.parameters[QueryParams.PARAM_PARENT_TYPE]?.toIntOrNull() ?: run {
                 call.respond(HttpStatusCode.BadRequest)
                 return@delete
             }
 
-            val unlikeSuccessful = likeService.unlikeParent(call.userId, request.parentId, request.parentType)
+            val unlikeSuccessful = likeService.unlikeParent(call.userId, parentId, parentType)
             if(unlikeSuccessful) {
                 call.respond(
                     HttpStatusCode.OK,
