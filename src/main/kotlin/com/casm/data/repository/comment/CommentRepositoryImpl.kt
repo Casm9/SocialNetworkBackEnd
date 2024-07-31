@@ -2,20 +2,25 @@ package com.casm.data.repository.comment
 
 import com.casm.data.models.Comment
 import com.casm.data.models.Like
+import com.casm.data.models.Post
 import com.casm.data.responses.CommentResponse
 import org.litote.kmongo.and
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.eq
+import org.litote.kmongo.setValue
 
 class CommentRepositoryImpl(
     db: CoroutineDatabase
-): CommentRepository {
+) : CommentRepository {
 
+    private val posts = db.getCollection<Post>()
     private val comments = db.getCollection<Comment>()
     private val likes = db.getCollection<Like>()
 
     override suspend fun createComment(comment: Comment): String {
         comments.insertOne(comment)
+        val oldCommentCount = posts.findOneById(comment.postId)?.commentCount ?: 0
+        posts.updateOneById(comment.postId, setValue(Post::commentCount, oldCommentCount + 1))
         return comment.id
     }
 
@@ -31,11 +36,14 @@ class CommentRepositoryImpl(
 
     }
 
-    override suspend fun getCommentsForPost(postId: String): List<CommentResponse> {
+    override suspend fun getCommentsForPost(
+        postId: String,
+        ownUserId: String
+    ): List<CommentResponse> {
         return comments.find(Comment::postId eq postId).toList().map { comment ->
             val isLiked = likes.findOne(
                 and(
-                    Like::userId eq comment.userId,
+                    Like::userId eq ownUserId,
                     Like::parentId eq comment.id
                 )
             ) != null

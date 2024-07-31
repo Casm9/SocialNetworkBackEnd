@@ -29,7 +29,7 @@ fun Route.createComment(
             }
 
             val userId = call.userId
-            when(commentService.createComment(request, userId)) {
+            when (commentService.createComment(request, userId)) {
                 is CommentService.ValidationEvent.ErrorFieldEmpty -> {
                     call.respond(
                         HttpStatusCode.OK,
@@ -39,6 +39,7 @@ fun Route.createComment(
                         )
                     )
                 }
+
                 is CommentService.ValidationEvent.ErrorCommentTooLong -> {
                     call.respond(
                         HttpStatusCode.OK,
@@ -48,6 +49,7 @@ fun Route.createComment(
                         )
                     )
                 }
+
                 is CommentService.ValidationEvent.Success -> {
                     activityService.addCommentActivity(
                         byUserId = userId,
@@ -60,6 +62,7 @@ fun Route.createComment(
                         )
                     )
                 }
+
                 is CommentService.ValidationEvent.UserNotFound -> {
                     call.respond(
                         HttpStatusCode.OK,
@@ -78,15 +81,13 @@ fun Route.createComment(
 fun Route.getCommentsForPost(
     commentService: CommentService
 ) {
-    authenticate {
-        get("/api/comment/get") {
-            val postId = call.parameters[QueryParams.PARAM_POST_ID] ?: run {
-                call.respond(HttpStatusCode.BadRequest)
-                return@get
-            }
-            val comments = commentService.getCommentsForPost(postId)
-            call.respond(HttpStatusCode.OK, comments)
+    get("/api/comment/get") {
+        val postId = call.parameters[QueryParams.PARAM_POST_ID] ?: run {
+            call.respond(HttpStatusCode.BadRequest)
+            return@get
         }
+        val comments = commentService.getCommentsForPost(postId, call.userId)
+        call.respond(HttpStatusCode.OK, comments)
     }
 }
 

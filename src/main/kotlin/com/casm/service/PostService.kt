@@ -11,7 +11,7 @@ class PostService(
 ) {
 
     suspend fun createPost(request: CreatePostRequest, userId: String, imageUrl: String): Boolean {
-       return repository.createPost(
+        return repository.createPost(
             Post(
                 imageUrl = imageUrl,
                 userId = userId,
@@ -22,27 +22,30 @@ class PostService(
     }
 
     suspend fun getPostsForFollows(
-        userId: String,
+        ownUserId: String,
         page: Int = 0,
-        pageSize: Int = Constants.DEFAULT_POST_PAGE_SIZE
-    ): List<Post> {
-        return repository.getPostByFollows(userId, page, pageSize)
+        pageSize: Int = Constants.DEFAULT_PAGE_SIZE
+    ): List<PostResponse> {
+        return repository.getPostsByFollows(ownUserId, page, pageSize)
     }
 
-    suspend fun getPost(postId: String): Post? {
+    suspend fun getPostsForProfile(
+        ownUserId: String,
+        userId: String,
+        page: Int = 0,
+        pageSize: Int = Constants.DEFAULT_PAGE_SIZE
+    ): List<PostResponse> {
+        return repository.getPostsForProfile(ownUserId, userId, page, pageSize)
+    }
+
+    suspend fun getPost(
+        postId: String
+    ): Post? {
         return repository.getPost(postId)
     }
 
     suspend fun getPostDetails(ownUserId: String, postId: String): PostResponse? {
         return repository.getPostDetails(ownUserId, postId)
-    }
-
-    suspend fun getPostsForProfile(
-        userId: String,
-        page: Int = 0,
-        pageSize: Int = Constants.DEFAULT_POST_PAGE_SIZE
-    ): List<Post> {
-        return repository.getPostForProfile(userId, page, pageSize)
     }
 
     suspend fun deletePost(postId: String) {

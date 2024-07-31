@@ -5,13 +5,15 @@ import com.casm.data.models.Like
 import com.casm.data.models.Post
 import com.casm.data.models.User
 import com.casm.data.responses.PostResponse
+import org.litote.kmongo.and
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.eq
 import org.litote.kmongo.`in`
+import org.litote.kmongo.inc
 
 class PostRepositoryImpl(
     db: CoroutineDatabase
-): PostRepository {
+) : PostRepository {
 
     private val posts = db.getCollection<Post>()
     private val following = db.getCollection<Following>()
@@ -19,39 +21,87 @@ class PostRepositoryImpl(
     private val likes = db.getCollection<Like>()
 
     override suspend fun createPost(post: Post): Boolean {
-       return posts.insertOne(post).wasAcknowledged()
+        return posts.insertOne(post).wasAcknowledged().also { wasAcknowledged ->
+            if(wasAcknowledged) {
+                users.updateOneById(
+                    post.userId,
+                    inc(User::postCount, 1)
+                )
+            }
+        }
     }
 
     override suspend fun deletePost(postId: String) {
-       posts.deleteOneById(postId)
+        posts.findOneById(postId)?.also {
+            users.updateOneById(
+                it.userId,
+                inc(User::postCount, -1)
+            )
+        }
+        posts.deleteOneById(postId)
     }
 
-    override suspend fun getPostByFollows(
-        userId: String,
+    override suspend fun getPostsByFollows(
+        ownUserId: String,
         page: Int,
         pageSize: Int
-    ): List<Post> {
-        val userIdsFromFollows = following.find(Following::followingUserId eq userId)
+    ): List<PostResponse> {
+        val userIdsFromFollows = following.find(Following::followingUserId eq ownUserId)
             .toList()
             .map {
                 it.followedUserId
-        }
-       return posts.find(Post::userId `in` userIdsFromFollows)
+            }
+        return posts.find(Post::userId `in` userIdsFromFollows)
             .skip(page * pageSize)
             .limit(pageSize)
             .descendingSort(Post::timestamp)
             .toList()
-
-
+            .map { post ->
+                val isLiked = likes.findOne(and(
+                    Like::parentId eq post.id,
+                    Like::userId eq ownUserId
+                )) != null
+                val user = users.findOneById(post.userId)
+                PostResponse(
+                    id = post.id,
+                    userId = ownUserId,
+                    username = user?.username ?: "",
+                    imageUrl = post.imageUrl,
+                    profilePictureUrl = user?.profileImageUrl ?: "",
+                    description = post.description,
+                    likeCount = post.likeCount,
+                    commentCount = post.commentCount,
+                    isLiked = isLiked,
+                    isOwnPost = ownUserId == post.userId
+                )
+            }
     }
 
-    override suspend fun getPostForProfile(userId: String, page: Int, pageSize: Int): List<Post> {
-
+    override suspend fun getPostsForProfile(ownUserId: String, userId: String, page: Int, pageSize: Int): List<PostResponse> {
+        val user = users.findOneById(userId) ?: return emptyList()
         return posts.find(Post::userId eq userId)
             .skip(page * pageSize)
             .limit(pageSize)
             .descendingSort(Post::timestamp)
             .toList()
+            .map { post ->
+                val isLiked = likes.findOne(and(
+                    Like::parentId eq post.id,
+                    Like::userId eq ownUserId
+                )) != null
+                PostResponse(
+                    id = post.id,
+                    userId = userId,
+                    username = user.username,
+                    imageUrl = post.imageUrl,
+                    profilePictureUrl = user.profileImageUrl,
+                    description = post.description,
+                    likeCount = post.likeCount,
+                    commentCount = post.commentCount,
+                    isLiked = isLiked,
+                    isOwnPost = ownUserId == post.userId
+                )
+            }
     }
 
     override suspend fun getPost(postId: String): Post? {
@@ -60,8 +110,8 @@ class PostRepositoryImpl(
 
     override suspend fun getPostDetails(userId: String, postId: String): PostResponse? {
         val isLiked = likes.findOne(Like::userId eq userId) != null
-        val post = posts.findOneById(postId) ?: return null
-        val user = users.findOneById(userId) ?: return null
+        val post =  posts.findOneById(postId) ?: return null
+        val user = users.findOneById(post.userId) ?: return null
         return PostResponse(
             id = post.id,
             userId = user.id,
@@ -71,8 +121,8 @@ class PostRepositoryImpl(
             description = post.description,
             likeCount = post.likeCount,
             commentCount = post.commentCount,
-            isLiked = isLiked
+            isLiked = isLiked,
+            isOwnPost = userId == post.userId
         )
     }
-
 }

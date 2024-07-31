@@ -44,8 +44,8 @@ class CommentService(
         commentRepository.deleteCommentsFromPost(postId)
     }
 
-    suspend fun getCommentsForPost(postId: String): List<CommentResponse> {
-        return commentRepository.getCommentsForPost(postId)
+    suspend fun getCommentsForPost(postId: String, ownUserId: String): List<CommentResponse> {
+        return commentRepository.getCommentsForPost(postId, ownUserId)
     }
 
     suspend fun getCommentById(commentId: String): Comment? {
