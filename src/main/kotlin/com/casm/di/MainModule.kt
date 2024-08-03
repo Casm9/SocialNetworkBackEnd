@@ -1,8 +1,9 @@
 package com.casm.di
 
-import com.casm.data.models.Post
 import com.casm.data.repository.activity.ActivityRepository
 import com.casm.data.repository.activity.ActivityRepositoryImpl
+import com.casm.data.repository.chat.ChatRepository
+import com.casm.data.repository.chat.ChatRepositoryImpl
 import com.casm.data.repository.comment.CommentRepository
 import com.casm.data.repository.comment.CommentRepositoryImpl
 import com.casm.data.repository.follow.FollowRepository
@@ -16,6 +17,7 @@ import com.casm.data.repository.skill.SkillRepositoryImpl
 import com.casm.data.repository.user.UserRepository
 import com.casm.data.repository.user.UserRepositoryImpl
 import com.casm.service.ActivityService
+import com.casm.service.ChatService
 import com.casm.service.CommentService
 import com.casm.service.FollowService
 import com.casm.service.LikeService
@@ -24,12 +26,9 @@ import com.casm.service.SkillService
 import com.casm.service.UserService
 import com.casm.util.Constants
 import com.google.gson.Gson
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import org.koin.dsl.module
 import org.litote.kmongo.coroutine.coroutine
 import org.litote.kmongo.reactivestreams.KMongo
-
 
 
 val mainModule = module {
@@ -44,7 +43,7 @@ val mainModule = module {
         FollowRepositoryImpl(get())
     }
     single<PostRepository> {
-       PostRepositoryImpl(get())
+        PostRepositoryImpl(get())
     }
     single<LikeRepository> {
         LikeRepositoryImpl(get())
@@ -58,6 +57,9 @@ val mainModule = module {
     single<SkillRepository> {
         SkillRepositoryImpl(get())
     }
+    single<ChatRepository> {
+        ChatRepositoryImpl(get())
+    }
     single { UserService(get(), get()) }
     single { FollowService(get()) }
     single { PostService(get()) }
@@ -65,6 +67,7 @@ val mainModule = module {
     single { CommentService(get(), get()) }
     single { ActivityService(get(), get(), get()) }
     single { SkillService(get()) }
+    single { ChatService(get()) }
 
     single { Gson() }
 

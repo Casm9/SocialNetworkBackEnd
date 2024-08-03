@@ -1,6 +1,7 @@
 package com.casm.plugins
 
 import com.casm.routes.authenticate
+import com.casm.routes.chatWebSocket
 import com.casm.routes.createComment
 import com.casm.routes.createPost
 import com.casm.routes.createUser
@@ -8,8 +9,10 @@ import com.casm.routes.deleteComment
 import com.casm.routes.deletePost
 import com.casm.routes.followUser
 import com.casm.routes.getActivities
+import com.casm.routes.getChatsForUser
 import com.casm.routes.getCommentsForPost
 import com.casm.routes.getLikesForParent
+import com.casm.routes.getMessagesForChat
 import com.casm.routes.getPostDetails
 import com.casm.routes.getPostsForFollows
 import com.casm.routes.getPostsForProfile
@@ -22,21 +25,18 @@ import com.casm.routes.unfollowUser
 import com.casm.routes.unlikeParent
 import com.casm.routes.updateUserProfile
 import com.casm.service.ActivityService
+import com.casm.service.ChatService
 import com.casm.service.CommentService
 import com.casm.service.FollowService
 import com.casm.service.LikeService
 import com.casm.service.PostService
 import com.casm.service.SkillService
 import com.casm.service.UserService
-import io.ktor.application.*
-import io.ktor.http.content.files
-import io.ktor.http.content.resource
+import io.ktor.application.Application
 import io.ktor.http.content.resources
 import io.ktor.http.content.static
-import io.ktor.http.content.staticRootFolder
-import io.ktor.routing.*
+import io.ktor.routing.routing
 import org.koin.ktor.ext.inject
-import java.io.File
 
 fun Application.configureRouting() {
 
@@ -47,6 +47,7 @@ fun Application.configureRouting() {
     val commentService: CommentService by inject()
     val activityService: ActivityService by inject()
     val skillService: SkillService by inject()
+    val chatService: ChatService by inject()
 
     val jwtIssuer = environment.config.property("jwt.domain").getString()
     val jwtAudience = environment.config.property("jwt.audience").getString()
@@ -93,6 +94,11 @@ fun Application.configureRouting() {
 
         //skill routes
         getSkills(skillService)
+
+        //chat routes
+        getChatsForUser(chatService)
+        getMessagesForChat(chatService)
+        chatWebSocket(chatService)
 
         static {
             resources("static")
