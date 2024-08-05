@@ -25,13 +25,14 @@ import com.casm.routes.unfollowUser
 import com.casm.routes.unlikeParent
 import com.casm.routes.updateUserProfile
 import com.casm.service.ActivityService
-import com.casm.service.ChatService
 import com.casm.service.CommentService
 import com.casm.service.FollowService
 import com.casm.service.LikeService
 import com.casm.service.PostService
 import com.casm.service.SkillService
 import com.casm.service.UserService
+import com.casm.service.chat.ChatController
+import com.casm.service.chat.ChatService
 import io.ktor.application.Application
 import io.ktor.http.content.resources
 import io.ktor.http.content.static
@@ -48,6 +49,7 @@ fun Application.configureRouting() {
     val activityService: ActivityService by inject()
     val skillService: SkillService by inject()
     val chatService: ChatService by inject()
+    val chatController: ChatController by inject()
 
     val jwtIssuer = environment.config.property("jwt.domain").getString()
     val jwtAudience = environment.config.property("jwt.audience").getString()
@@ -98,7 +100,7 @@ fun Application.configureRouting() {
         //chat routes
         getChatsForUser(chatService)
         getMessagesForChat(chatService)
-        chatWebSocket(chatService)
+        chatWebSocket(chatController)
 
         static {
             resources("static")

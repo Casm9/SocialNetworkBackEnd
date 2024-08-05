@@ -17,13 +17,14 @@ import com.casm.data.repository.skill.SkillRepositoryImpl
 import com.casm.data.repository.user.UserRepository
 import com.casm.data.repository.user.UserRepositoryImpl
 import com.casm.service.ActivityService
-import com.casm.service.ChatService
 import com.casm.service.CommentService
 import com.casm.service.FollowService
 import com.casm.service.LikeService
 import com.casm.service.PostService
 import com.casm.service.SkillService
 import com.casm.service.UserService
+import com.casm.service.chat.ChatController
+import com.casm.service.chat.ChatService
 import com.casm.util.Constants
 import com.google.gson.Gson
 import org.koin.dsl.module
@@ -70,5 +71,7 @@ val mainModule = module {
     single { ChatService(get()) }
 
     single { Gson() }
+
+    single { ChatController(get()) }
 
 }

@@ -1,4 +1,4 @@
-package com.casm.service
+package com.casm.service.chat
 
 import com.casm.data.models.Chat
 import com.casm.data.models.Message
