@@ -3,6 +3,7 @@ package com.casm.data.repository.chat
 import com.casm.data.models.Chat
 import com.casm.data.models.Message
 import com.casm.data.models.User
+import com.casm.data.responses.ChatDto
 import org.litote.kmongo.and
 import org.litote.kmongo.contains
 import org.litote.kmongo.coroutine.CoroutineDatabase
@@ -28,10 +29,24 @@ class ChatRepositoryImpl(
             .toList()
     }
 
-    override suspend fun getChatsForUser(ownUserId: String): List<Chat> {
+    override suspend fun getChatsForUser(ownUserId: String): List<ChatDto> {
+
         return chats.find(Chat::userIds contains ownUserId)
             .descendingSort(Chat::timestamp)
             .toList()
+            .map { chat ->
+                val otherUserId = chat.userIds.find { it != ownUserId }
+                val user = users.findOneById(otherUserId ?: "")
+                val message = messages.findOneById(chat.lastMessageId)
+                ChatDto(
+                    chatId = chat.id,
+                    remoteUserId = user?.id,
+                    remoteUsername = user?.username,
+                    remoteUserProfilePictureUrl = user?.profileImageUrl,
+                    lastMessage = message?.text,
+                    timestamp = message?.timeStamp
+                )
+            }
     }
 
     override suspend fun doesChatBelongToUser(chatId: String, userId: String): Boolean {

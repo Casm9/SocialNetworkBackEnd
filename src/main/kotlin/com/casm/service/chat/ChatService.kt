@@ -1,8 +1,8 @@
 package com.casm.service.chat
 
-import com.casm.data.models.Chat
 import com.casm.data.models.Message
 import com.casm.data.repository.chat.ChatRepository
+import com.casm.data.responses.ChatDto
 
 class ChatService(
     private val chatRepository: ChatRepository
@@ -15,7 +15,7 @@ class ChatService(
         return chatRepository.getMessagesForChat(chatId, page, pageSize)
     }
 
-    suspend fun getChatsForUser(ownUserId: String): List<Chat> {
+    suspend fun getChatsForUser(ownUserId: String): List<ChatDto> {
         return chatRepository.getChatsForUser(ownUserId)
     }
 }

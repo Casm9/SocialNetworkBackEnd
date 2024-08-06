@@ -2,7 +2,7 @@ package com.casm.data.websocket
 
 import com.casm.data.models.Message
 
-data class WsMessage(
+data class WsServerMessage(
     val fromId: String,
     val toId: String,
     val text: String,

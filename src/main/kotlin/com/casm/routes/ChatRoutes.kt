@@ -1,6 +1,6 @@
 package com.casm.routes
 
-import com.casm.data.websocket.WsMessage
+import com.casm.data.websocket.WsServerMessage
 import com.casm.service.chat.ChatController
 import com.casm.service.chat.ChatService
 import com.casm.service.chat.ChatSession
@@ -52,7 +52,6 @@ fun Route.getMessagesForChat(chatService: ChatService) {
 fun Route.getChatsForUser(chatService: ChatService) {
     authenticate {
         get("/api/chats") {
-
             val chats = chatService.getChatsForUser(call.userId)
             call.respond(HttpStatusCode.OK, chats)
         }
@@ -78,7 +77,7 @@ fun Route.chatWebSocket(chatController: ChatController) {
                         }
                         val type = frameText.substring(0, delimiterIndex).toIntOrNull() ?: return@consumeEach
                         val json = frameText.substring(delimiterIndex + 1, frameText.length)
-                        handleWebSocket(this, session, chatController, type, json)
+                        handleWebSocket(this, session, chatController, type, frameText, json)
 
                     }
 
@@ -99,13 +98,14 @@ suspend fun handleWebSocket(
     session: ChatSession,
     chatController: ChatController,
     type: Int,
+    frameText: String,
     json: String
 ) {
     val gson by inject<Gson>(Gson::class.java)
     when (type) {
         WebSocketObject.MESSAGE.ordinal -> {
-            val message = gson.fromJsonOrNull(json, WsMessage::class.java) ?: return
-            chatController.sendMessage(json, message)
+            val message = gson.fromJsonOrNull(json, WsServerMessage::class.java) ?: return
+            chatController.sendMessage(frameText, message)
         }
     }
 }
