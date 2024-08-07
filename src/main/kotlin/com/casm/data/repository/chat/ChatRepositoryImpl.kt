@@ -25,7 +25,7 @@ class ChatRepositoryImpl(
         return messages.find(Message::chatId eq chatId)
             .skip(page * pageSize)
             .limit(pageSize)
-            .descendingSort(Message::timeStamp)
+            .ascendingSort(Message::timeStamp)
             .toList()
     }
 
@@ -57,7 +57,7 @@ class ChatRepositoryImpl(
         messages.insertOne(message)
     }
 
-    override suspend fun insertChat(userId1: String, userId2: String, messageId: String) {
+    override suspend fun insertChat(userId1: String, userId2: String, messageId: String): String {
         val chat = Chat(
             userIds = listOf(
                 userId1,
@@ -68,6 +68,7 @@ class ChatRepositoryImpl(
         )
         val chatId = chats.insertOne(chat).insertedId?.asObjectId().toString()
         messages.updateOneById(messageId, setValue(Message::chatId, chatId))
+        return chat.id
     }
 
     override suspend fun doesChatByUsersExist(userId1: String, userId2: String): Boolean {

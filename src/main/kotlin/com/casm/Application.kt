@@ -6,7 +6,6 @@ import com.casm.plugins.configureMonitoring
 import com.casm.plugins.configureRouting
 import com.casm.plugins.configureSecurity
 import com.casm.plugins.configureSerialization
-import com.casm.plugins.configureSessions
 import com.casm.plugins.configureSockets
 import io.ktor.application.Application
 import io.ktor.application.install
@@ -26,7 +25,6 @@ fun Application.module() {
     configureHTTP()
     configureSecurity()
     configureSockets()
-    configureSessions()
     configureRouting()
 
 }
