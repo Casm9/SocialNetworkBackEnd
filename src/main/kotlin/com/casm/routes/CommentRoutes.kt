@@ -2,12 +2,10 @@ package com.casm.routes
 
 import com.casm.data.requests.CreateCommentRequest
 import com.casm.data.requests.DeleteCommentRequest
-import com.casm.data.requests.DeletePostRequest
 import com.casm.data.responses.BasicApiResponse
 import com.casm.service.ActivityService
 import com.casm.service.CommentService
 import com.casm.service.LikeService
-import com.casm.service.UserService
 import com.casm.util.ApiResponseMessages
 import com.casm.util.QueryParams
 import io.ktor.application.call
@@ -15,7 +13,10 @@ import io.ktor.auth.authenticate
 import io.ktor.http.HttpStatusCode
 import io.ktor.request.receiveOrNull
 import io.ktor.response.respond
-import io.ktor.routing.*
+import io.ktor.routing.Route
+import io.ktor.routing.delete
+import io.ktor.routing.get
+import io.ktor.routing.post
 
 fun Route.createComment(
     commentService: CommentService,

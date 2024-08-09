@@ -1,7 +1,6 @@
 package com.casm.routes
 
 import com.casm.data.requests.CreatePostRequest
-import com.casm.data.requests.DeletePostRequest
 import com.casm.data.responses.BasicApiResponse
 import com.casm.service.CommentService
 import com.casm.service.LikeService
@@ -16,9 +15,11 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.PartData
 import io.ktor.http.content.forEachPart
 import io.ktor.request.receiveMultipart
-import io.ktor.request.receiveOrNull
 import io.ktor.response.respond
-import io.ktor.routing.*
+import io.ktor.routing.Route
+import io.ktor.routing.delete
+import io.ktor.routing.get
+import io.ktor.routing.post
 import org.koin.ktor.ext.inject
 import java.io.File
 
@@ -41,9 +42,11 @@ fun Route.createPost(
                             )
                         }
                     }
+
                     is PartData.FileItem -> {
                         fileName = partData.save(Constants.POST_PICTURE_PATH)
                     }
+
                     is PartData.BinaryItem -> Unit
                 }
             }
@@ -83,7 +86,8 @@ fun Route.getPostsForProfile(
             val userId = call.parameters[QueryParams.PARAM_USER_ID]
             val page = call.parameters[QueryParams.PARAM_PAGE]?.toIntOrNull() ?: 0
             val pageSize =
-                call.parameters[QueryParams.PARAM_PAGE_SIZE]?.toIntOrNull() ?: Constants.DEFAULT_PAGE_SIZE
+                call.parameters[QueryParams.PARAM_PAGE_SIZE]?.toIntOrNull()
+                    ?: Constants.DEFAULT_PAGE_SIZE
 
             val posts = postService.getPostsForProfile(
                 ownUserId = call.userId,
@@ -106,7 +110,8 @@ fun Route.getPostsForFollows(
         get("/api/post/get") {
             val page = call.parameters[QueryParams.PARAM_PAGE]?.toIntOrNull() ?: 0
             val pageSize =
-                call.parameters[QueryParams.PARAM_PAGE_SIZE]?.toIntOrNull() ?: Constants.DEFAULT_PAGE_SIZE
+                call.parameters[QueryParams.PARAM_PAGE_SIZE]?.toIntOrNull()
+                    ?: Constants.DEFAULT_PAGE_SIZE
 
             val posts = postService.getPostsForFollows(call.userId, page, pageSize)
             call.respond(
@@ -124,7 +129,7 @@ fun Route.deletePost(
 ) {
     authenticate {
         delete("/api/post/delete") {
-            val postId = call.parameters["postId"] ?: kotlin.run {
+            val postId = call.parameters["postId"] ?: run {
                 call.respond(HttpStatusCode.BadRequest)
                 return@delete
             }
@@ -147,7 +152,7 @@ fun Route.deletePost(
 
 fun Route.getPostDetails(postService: PostService) {
     get("/api/post/details") {
-        val postId = call.parameters["postId"] ?: kotlin.run {
+        val postId = call.parameters["postId"] ?: run {
             call.respond(HttpStatusCode.BadRequest)
             return@get
         }

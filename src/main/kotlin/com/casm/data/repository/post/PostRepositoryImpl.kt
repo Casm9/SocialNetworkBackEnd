@@ -22,7 +22,7 @@ class PostRepositoryImpl(
 
     override suspend fun createPost(post: Post): Boolean {
         return posts.insertOne(post).wasAcknowledged().also { wasAcknowledged ->
-            if(wasAcknowledged) {
+            if (wasAcknowledged) {
                 users.updateOneById(
                     post.userId,
                     inc(User::postCount, 1)
@@ -57,10 +57,12 @@ class PostRepositoryImpl(
             .descendingSort(Post::timestamp)
             .toList()
             .map { post ->
-                val isLiked = likes.findOne(and(
-                    Like::parentId eq post.id,
-                    Like::userId eq ownUserId
-                )) != null
+                val isLiked = likes.findOne(
+                    and(
+                        Like::parentId eq post.id,
+                        Like::userId eq ownUserId
+                    )
+                ) != null
                 val user = users.findOneById(post.userId)
                 PostResponse(
                     id = post.id,
@@ -77,7 +79,12 @@ class PostRepositoryImpl(
             }
     }
 
-    override suspend fun getPostsForProfile(ownUserId: String, userId: String, page: Int, pageSize: Int): List<PostResponse> {
+    override suspend fun getPostsForProfile(
+        ownUserId: String,
+        userId: String,
+        page: Int,
+        pageSize: Int
+    ): List<PostResponse> {
         val user = users.findOneById(userId) ?: return emptyList()
         return posts.find(Post::userId eq userId)
             .skip(page * pageSize)
@@ -85,10 +92,12 @@ class PostRepositoryImpl(
             .descendingSort(Post::timestamp)
             .toList()
             .map { post ->
-                val isLiked = likes.findOne(and(
-                    Like::parentId eq post.id,
-                    Like::userId eq ownUserId
-                )) != null
+                val isLiked = likes.findOne(
+                    and(
+                        Like::parentId eq post.id,
+                        Like::userId eq ownUserId
+                    )
+                ) != null
                 PostResponse(
                     id = post.id,
                     userId = userId,
@@ -110,7 +119,7 @@ class PostRepositoryImpl(
 
     override suspend fun getPostDetails(userId: String, postId: String): PostResponse? {
         val isLiked = likes.findOne(Like::userId eq userId) != null
-        val post =  posts.findOneById(postId) ?: return null
+        val post = posts.findOneById(postId) ?: return null
         val user = users.findOneById(post.userId) ?: return null
         return PostResponse(
             id = post.id,
