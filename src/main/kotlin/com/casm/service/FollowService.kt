@@ -1,7 +1,7 @@
 package com.casm.service
 
-import com.casm.data.requests.FollowUpdateRequest
 import com.casm.data.repository.follow.FollowRepository
+import com.casm.data.requests.FollowUpdateRequest
 
 class FollowService(
     private val followRepository: FollowRepository

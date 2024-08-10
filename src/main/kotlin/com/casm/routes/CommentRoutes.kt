@@ -74,7 +74,6 @@ fun Route.createComment(
                     )
                 }
             }
-
         }
     }
 }
@@ -91,7 +90,6 @@ fun Route.getCommentsForPost(
         call.respond(HttpStatusCode.OK, comments)
     }
 }
-
 
 fun Route.deleteComment(
     commentService: CommentService,

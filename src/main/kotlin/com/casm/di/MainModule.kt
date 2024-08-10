@@ -31,7 +31,6 @@ import org.koin.dsl.module
 import org.litote.kmongo.coroutine.coroutine
 import org.litote.kmongo.reactivestreams.KMongo
 
-
 val mainModule = module {
     single {
         val client = KMongo.createClient().coroutine
@@ -69,9 +68,6 @@ val mainModule = module {
     single { ActivityService(get(), get(), get()) }
     single { SkillService(get()) }
     single { ChatService(get()) }
-
     single { Gson() }
-
     single { ChatController(get()) }
-
 }

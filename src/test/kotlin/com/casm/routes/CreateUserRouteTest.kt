@@ -9,10 +9,13 @@ import com.casm.repository.user.FakeUserRepository
 import com.casm.util.ApiResponseMessages
 import com.google.common.truth.Truth.assertThat
 import com.google.gson.Gson
-import io.ktor.application.*
-import io.ktor.http.*
-import io.ktor.routing.*
-import io.ktor.server.testing.*
+import io.ktor.application.install
+import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
+import io.ktor.routing.Routing
+import io.ktor.server.testing.handleRequest
+import io.ktor.server.testing.setBody
+import io.ktor.server.testing.withTestApplication
 import kotlinx.coroutines.runBlocking
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -23,7 +26,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 
 
-internal class CreateUserRouteTest: KoinTest {
+internal class CreateUserRouteTest : KoinTest {
 
     private val userRepository by inject<FakeUserRepository>()
     private val gson = Gson()
@@ -44,9 +47,7 @@ internal class CreateUserRouteTest: KoinTest {
     fun `Create user, no body attached, responds with BadRequest`() {
         withTestApplication(
             moduleFunction = {
-                install(Routing) {
-                   // createUserRoute(userRepository)
-                }
+                install(Routing) {}
             }
         ) {
             val request = handleRequest(
@@ -77,9 +78,7 @@ internal class CreateUserRouteTest: KoinTest {
         withTestApplication(
             moduleFunction = {
                 configureSerialization()
-                install(Routing) {
-                    //createUserRoute(userRepository)
-                }
+                install(Routing) {}
             }
         ) {
             val request = handleRequest(
@@ -110,9 +109,7 @@ internal class CreateUserRouteTest: KoinTest {
         withTestApplication(
             moduleFunction = {
                 configureSerialization()
-                install(Routing) {
-                   // createUserRoute(userRepository)
-                }
+                install(Routing) {}
             }
         ) {
             val request = handleRequest(
@@ -143,9 +140,7 @@ internal class CreateUserRouteTest: KoinTest {
         withTestApplication(
             moduleFunction = {
                 configureSerialization()
-                install(Routing) {
-                  //  createUserRoute(userRepository)
-                }
+                install(Routing) {}
             }
         ) {
             val request = handleRequest(
@@ -171,8 +166,6 @@ internal class CreateUserRouteTest: KoinTest {
                 val isUserInDb = userRepository.getUserByEmail("test@test.com") != null
                 assertThat(isUserInDb).isTrue()
             }
-
         }
     }
-
 }

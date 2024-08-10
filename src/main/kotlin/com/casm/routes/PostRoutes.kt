@@ -23,9 +23,7 @@ import io.ktor.routing.post
 import org.koin.ktor.ext.inject
 import java.io.File
 
-fun Route.createPost(
-    postService: PostService,
-) {
+fun Route.createPost(postService: PostService) {
     val gson by inject<Gson>()
     authenticate {
         post("/api/post/create") {
@@ -70,7 +68,7 @@ fun Route.createPost(
                     File("${Constants.POST_PICTURE_PATH}/$fileName").delete()
                     call.respond(HttpStatusCode.InternalServerError)
                 }
-            } ?: kotlin.run {
+            } ?: run {
                 call.respond(HttpStatusCode.BadRequest)
                 return@post
             }
@@ -78,9 +76,7 @@ fun Route.createPost(
     }
 }
 
-fun Route.getPostsForProfile(
-    postService: PostService,
-) {
+fun Route.getPostsForProfile(postService: PostService) {
     authenticate {
         get("/api/user/posts") {
             val userId = call.parameters[QueryParams.PARAM_USER_ID]
@@ -103,9 +99,7 @@ fun Route.getPostsForProfile(
     }
 }
 
-fun Route.getPostsForFollows(
-    postService: PostService,
-) {
+fun Route.getPostsForFollows(postService: PostService) {
     authenticate {
         get("/api/post/get") {
             val page = call.parameters[QueryParams.PARAM_PAGE]?.toIntOrNull() ?: 0

@@ -1,26 +1,26 @@
 package com.casm.routes
 
-import com.casm.data.models.User
 import com.casm.data.requests.UpdateProfileRequest
 import com.casm.data.responses.BasicApiResponse
 import com.casm.data.responses.UserResponseItem
-import com.casm.service.PostService
 import com.casm.service.UserService
 import com.casm.util.ApiResponseMessages
-import com.casm.util.Constants
 import com.casm.util.Constants.BANNER_IMAGE_PATH
 import com.casm.util.Constants.BASE_URL
 import com.casm.util.Constants.PROFILE_PICTURE_PATH
 import com.casm.util.QueryParams
 import com.casm.util.save
 import com.google.gson.Gson
-import io.ktor.application.*
+import io.ktor.application.call
 import io.ktor.auth.authenticate
-import io.ktor.http.*
-import io.ktor.http.content.*
-import io.ktor.request.*
-import io.ktor.response.*
-import io.ktor.routing.*
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.content.PartData
+import io.ktor.http.content.forEachPart
+import io.ktor.request.receiveMultipart
+import io.ktor.response.respond
+import io.ktor.routing.Route
+import io.ktor.routing.get
+import io.ktor.routing.put
 import org.koin.ktor.ext.inject
 import java.io.File
 
@@ -40,7 +40,6 @@ fun Route.searchUser(userService: UserService) {
                 HttpStatusCode.OK,
                 searchResults
             )
-
         }
     }
 }
@@ -71,7 +70,6 @@ fun Route.getUserProfile(userService: UserService) {
                     data = profileResponse
                 )
             )
-
         }
     }
 }

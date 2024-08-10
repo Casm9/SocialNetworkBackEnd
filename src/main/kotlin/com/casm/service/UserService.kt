@@ -2,13 +2,12 @@ package com.casm.service
 
 import com.casm.data.models.User
 import com.casm.data.repository.follow.FollowRepository
-import com.casm.data.requests.CreateAccountRequest
 import com.casm.data.repository.user.UserRepository
+import com.casm.data.requests.CreateAccountRequest
 import com.casm.data.requests.UpdateProfileRequest
 import com.casm.data.responses.ProfileResponse
 import com.casm.data.responses.UserResponseItem
 import com.casm.util.Constants
-
 
 class UserService(
     private val userRepository: UserRepository,
@@ -92,7 +91,7 @@ class UserService(
     }
 
     fun validateCreateAccountRequest(request: CreateAccountRequest): ValidationEvent {
-        if(request.email.isBlank() || request.password.isBlank() || request.username.isBlank()) {
+        if (request.email.isBlank() || request.password.isBlank() || request.username.isBlank()) {
             return ValidationEvent.ErrorFieldEmpty
         }
 
@@ -100,8 +99,8 @@ class UserService(
     }
 
     sealed class ValidationEvent {
-        data object ErrorFieldEmpty: ValidationEvent()
-        data object Success: ValidationEvent()
+        data object ErrorFieldEmpty : ValidationEvent()
+        data object Success : ValidationEvent()
     }
 }
 

@@ -12,7 +12,10 @@ class CommentService(
     private val userRepository: UserRepository
 ) {
 
-    suspend fun createComment(createCommentRequest: CreateCommentRequest, userId: String): ValidationEvent {
+    suspend fun createComment(
+        createCommentRequest: CreateCommentRequest,
+        userId: String
+    ): ValidationEvent {
         createCommentRequest.apply {
             if (comment.isBlank() || postId.isBlank()) {
                 return ValidationEvent.ErrorFieldEmpty
@@ -22,7 +25,7 @@ class CommentService(
             }
         }
         val user = userRepository.getUserById(userId) ?: return ValidationEvent.UserNotFound
-         commentRepository.createComment(
+        commentRepository.createComment(
             Comment(
                 username = user.username,
                 profileImageUrl = user.profileImageUrl,
@@ -53,9 +56,9 @@ class CommentService(
     }
 
     sealed class ValidationEvent {
-        data object ErrorFieldEmpty: ValidationEvent()
-        data object ErrorCommentTooLong: ValidationEvent()
-        data object UserNotFound: ValidationEvent()
+        data object ErrorFieldEmpty : ValidationEvent()
+        data object ErrorCommentTooLong : ValidationEvent()
+        data object UserNotFound : ValidationEvent()
         data object Success : ValidationEvent()
     }
 }

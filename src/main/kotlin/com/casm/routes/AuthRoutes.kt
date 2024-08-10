@@ -14,8 +14,8 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.request.receiveOrNull
 import io.ktor.response.respond
 import io.ktor.routing.Route
-import io.ktor.routing.post
 import io.ktor.routing.get
+import io.ktor.routing.post
 import java.util.Date
 
 fun Route.createUser(userService: UserService) {
@@ -36,7 +36,7 @@ fun Route.createUser(userService: UserService) {
             return@post
         }
 
-        when(userService.validateCreateAccountRequest(request)) {
+        when (userService.validateCreateAccountRequest(request)) {
             is UserService.ValidationEvent.ErrorFieldEmpty -> {
                 call.respond(
                     BasicApiResponse<Unit>(
@@ -56,7 +56,6 @@ fun Route.createUser(userService: UserService) {
         }
     }
 }
-
 
 fun Route.loginUser(
     userService: UserService,

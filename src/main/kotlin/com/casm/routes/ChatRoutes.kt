@@ -83,7 +83,6 @@ fun Route.chatWebSocket(chatController: ChatController) {
             }
         }
     }
-
 }
 
 suspend fun handleWebSocket(

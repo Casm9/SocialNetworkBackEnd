@@ -9,12 +9,16 @@ import org.litote.kmongo.`in`
 
 class ActivityRepositoryImpl(
     db: CoroutineDatabase
-): ActivityRepository {
+) : ActivityRepository {
 
     private val users = db.getCollection<User>()
     private val activities = db.getCollection<Activity>()
 
-    override suspend fun getActivitiesForUser(userId: String, page: Int, pageSize: Int): List<ActivityResponse> {
+    override suspend fun getActivitiesForUser(
+        userId: String,
+        page: Int,
+        pageSize: Int
+    ): List<ActivityResponse> {
 
         val activities = activities.find(Activity::toUserId eq userId)
             .skip(page * pageSize)
@@ -36,7 +40,7 @@ class ActivityRepositoryImpl(
         }
     }
 
-    override suspend fun createActivity(activity: Activity){
+    override suspend fun createActivity(activity: Activity) {
         activities.insertOne(activity)
     }
 

@@ -3,8 +3,6 @@ package com.casm.data.repository.post
 import com.casm.data.models.Post
 import com.casm.data.responses.PostResponse
 import com.casm.util.Constants
-import com.casm.util.Constants.DEFAULT_POST_PAGE_SIZE
-
 
 interface PostRepository {
 

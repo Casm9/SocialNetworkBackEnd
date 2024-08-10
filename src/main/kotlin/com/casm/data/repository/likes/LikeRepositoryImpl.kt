@@ -12,7 +12,7 @@ import org.litote.kmongo.setValue
 
 class LikeRepositoryImpl(
     db: CoroutineDatabase
-): LikeRepository {
+) : LikeRepository {
 
     private val likes = db.getCollection<Like>()
     private val users = db.getCollection<User>()
@@ -22,7 +22,7 @@ class LikeRepositoryImpl(
     override suspend fun likeParent(userId: String, parentId: String, parentType: Int): Boolean {
         val doesUserExist = users.findOneById(userId) != null
         return if (doesUserExist) {
-            when(parentType) {
+            when (parentType) {
                 ParentType.Post.type -> {
                     val post = posts.findOneById(parentId) ?: return false
                     posts.updateOneById(
@@ -31,6 +31,7 @@ class LikeRepositoryImpl(
                     )
 
                 }
+
                 ParentType.Comment.type -> {
                     val comment = comments.findOneById(parentId) ?: return false
                     comments.updateOneById(
@@ -39,7 +40,7 @@ class LikeRepositoryImpl(
                     )
                 }
             }
-            likes.insertOne( Like(userId,parentId, parentType, System.currentTimeMillis()) )
+            likes.insertOne(Like(userId, parentId, parentType, System.currentTimeMillis()))
             true
         } else {
             false
@@ -49,7 +50,7 @@ class LikeRepositoryImpl(
     override suspend fun unlikeParent(userId: String, parentId: String, parentType: Int): Boolean {
         val doesUserExist = users.findOneById(userId) != null
         return if (doesUserExist) {
-            when(parentType) {
+            when (parentType) {
                 ParentType.Post.type -> {
                     val post = posts.findOneById(parentId) ?: return false
                     posts.updateOneById(
@@ -58,11 +59,15 @@ class LikeRepositoryImpl(
                     )
 
                 }
+
                 ParentType.Comment.type -> {
                     val comment = comments.findOneById(parentId) ?: return false
                     comments.updateOneById(
                         id = parentId,
-                        update = setValue(Comment::likeCount, (comment.likeCount - 1).coerceAtLeast(0))
+                        update = setValue(
+                            Comment::likeCount,
+                            (comment.likeCount - 1).coerceAtLeast(0)
+                        )
                     )
                 }
             }

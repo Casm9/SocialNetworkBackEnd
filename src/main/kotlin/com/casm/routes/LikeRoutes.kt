@@ -12,7 +12,10 @@ import io.ktor.auth.authenticate
 import io.ktor.http.HttpStatusCode
 import io.ktor.request.receiveOrNull
 import io.ktor.response.respond
-import io.ktor.routing.*
+import io.ktor.routing.Route
+import io.ktor.routing.delete
+import io.ktor.routing.get
+import io.ktor.routing.post
 
 fun Route.likeParent(
     likeService: LikeService,
@@ -26,13 +29,14 @@ fun Route.likeParent(
             }
 
             val userId = call.userId
-            val likeSuccessful = likeService.likeParent(userId, request.parentId, request.parentType)
+            val likeSuccessful =
+                likeService.likeParent(userId, request.parentId, request.parentType)
 
-            if(likeSuccessful) {
+            if (likeSuccessful) {
                 activityService.addLikeActivity(
-                   byUserId =  userId,
-                   parentType = ParentType.fromType(request.parentType),
-                   parentId = request.parentId
+                    byUserId = userId,
+                    parentType = ParentType.fromType(request.parentType),
+                    parentId = request.parentId
                 )
                 call.respond(
                     HttpStatusCode.OK,
@@ -49,7 +53,6 @@ fun Route.likeParent(
                     )
                 )
             }
-
         }
     }
 }
@@ -69,7 +72,7 @@ fun Route.unlikeParent(
             }
 
             val unlikeSuccessful = likeService.unlikeParent(call.userId, parentId, parentType)
-            if(unlikeSuccessful) {
+            if (unlikeSuccessful) {
                 call.respond(
                     HttpStatusCode.OK,
                     BasicApiResponse<Unit>(
@@ -89,8 +92,6 @@ fun Route.unlikeParent(
     }
 }
 
-
-
 fun Route.getLikesForParent(likeService: LikeService) {
     authenticate {
         get("/api/like/parent") {
@@ -108,5 +109,4 @@ fun Route.getLikesForParent(likeService: LikeService) {
             )
         }
     }
-
 }

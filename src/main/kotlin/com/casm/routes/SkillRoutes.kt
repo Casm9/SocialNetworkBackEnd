@@ -9,7 +9,7 @@ import io.ktor.routing.Route
 import io.ktor.routing.get
 
 fun Route.getSkills(skillService: SkillService) {
-    authenticate{
+    authenticate {
         get("/api/skills/get") {
             call.respond(
                 HttpStatusCode.OK,

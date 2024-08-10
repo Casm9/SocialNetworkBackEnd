@@ -1,7 +1,6 @@
 package com.casm.service
 
 import com.casm.data.models.Activity
-import com.casm.data.models.Post
 import com.casm.data.repository.activity.ActivityRepository
 import com.casm.data.repository.comment.CommentRepository
 import com.casm.data.repository.post.PostRepository
@@ -43,14 +42,20 @@ class ActivityService(
         return true
     }
 
-    suspend fun addLikeActivity(byUserId: String, parentType: ParentType, parentId: String): Boolean {
-      val toUserId = when(parentType) {
+    suspend fun addLikeActivity(
+        byUserId: String,
+        parentType: ParentType,
+        parentId: String
+    ): Boolean {
+        val toUserId = when (parentType) {
             is ParentType.Post -> {
                 postRepository.getPost(parentId)?.userId
             }
+
             is ParentType.Comment -> {
-              commentRepository.getComment(parentId)?.userId
+                commentRepository.getComment(parentId)?.userId
             }
+
             is ParentType.None -> return false
         } ?: return false
         if (byUserId == toUserId) {
@@ -61,11 +66,11 @@ class ActivityService(
                 timestamp = System.currentTimeMillis(),
                 byUserId = byUserId,
                 toUserId = toUserId,
-                type = when(parentType) {
-                      is ParentType.Post -> ActivityType.LikedPost.type
-                      is ParentType.Comment -> ActivityType.LikedComment.type
-                      else -> ActivityType.LikedPost.type
-                    },
+                type = when (parentType) {
+                    is ParentType.Post -> ActivityType.LikedPost.type
+                    is ParentType.Comment -> ActivityType.LikedComment.type
+                    else -> ActivityType.LikedPost.type
+                },
                 parentId = parentId
             )
         )
@@ -74,9 +79,5 @@ class ActivityService(
 
     suspend fun createActivity(activity: Activity) {
         activityRepository.createActivity(activity)
-    }
-
-    suspend fun deleteActivity(activityId: String): Boolean {
-        return activityRepository.deleteActivity(activityId)
     }
 }

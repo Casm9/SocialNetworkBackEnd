@@ -1,10 +1,10 @@
 package com.casm.plugins
 
-import io.ktor.application.*
-import io.ktor.features.*
-import io.ktor.request.*
-import io.ktor.response.*
-import org.slf4j.event.*
+import io.ktor.application.Application
+import io.ktor.application.install
+import io.ktor.features.CallLogging
+import io.ktor.request.path
+import org.slf4j.event.Level
 
 fun Application.configureMonitoring() {
     install(CallLogging) {

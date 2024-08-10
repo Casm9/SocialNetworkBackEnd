@@ -15,7 +15,6 @@ fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
 }
 
-
 fun Application.module() {
     install(Koin) {
         modules(mainModule)
@@ -26,5 +25,4 @@ fun Application.module() {
     configureSecurity()
     configureSockets()
     configureRouting()
-
 }

@@ -49,6 +49,5 @@ class ChatController(
                 repository.updateLastMessageIdForChat(message.chatId, messageEntity.id)
             }
         }
-
     }
 }

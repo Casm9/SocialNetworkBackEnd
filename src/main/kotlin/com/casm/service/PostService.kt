@@ -1,8 +1,8 @@
 package com.casm.service
 
 import com.casm.data.models.Post
-import com.casm.data.requests.CreatePostRequest
 import com.casm.data.repository.post.PostRepository
+import com.casm.data.requests.CreatePostRequest
 import com.casm.data.responses.PostResponse
 import com.casm.util.Constants
 

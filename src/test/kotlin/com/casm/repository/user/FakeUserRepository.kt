@@ -4,9 +4,9 @@ import com.casm.data.models.User
 import com.casm.data.repository.user.UserRepository
 import com.casm.data.requests.UpdateProfileRequest
 
-class FakeUserRepository: UserRepository {
+class FakeUserRepository : UserRepository {
 
-    val users = mutableListOf<User>()
+    private val users = mutableListOf<User>()
 
     override suspend fun createUser(user: User) {
         users.add(user)

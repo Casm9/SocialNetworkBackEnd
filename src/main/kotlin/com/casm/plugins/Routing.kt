@@ -64,7 +64,6 @@ fun Application.configureRouting() {
             jwtIssuer = jwtIssuer,
             jwtAudience = jwtAudience,
             jwtSecret = jwtSecret
-
         )
         searchUser(userService)
         getUserProfile(userService)
